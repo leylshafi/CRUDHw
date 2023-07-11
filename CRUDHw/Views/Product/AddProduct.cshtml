@@ -1,0 +1,12 @@
+﻿@model Product
+
+<div class="d-flex justify-content-center align-items-center bg-secondary-subtle">
+	<form asp-controller="Product" asp-action="AddProduct" method="post">
+		<input asp-for="@Model.Name" placeholder="Product Name" /> <br />
+		<textarea asp-for="@Model.Description" placeholder="Description"></textarea> <br />
+		<input asp-for="@Model.Price" placeholder="Price" /> <br />
+		<input asp-for="@Model.Quantity" placeholder="Quantity" /> <br />
+		<input asp-for="@Model.Image" placeholder="Image" /> <br />
+		<input type="submit" value="Add" />
+	</form>
+</div>
