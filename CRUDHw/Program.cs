@@ -1,6 +1,17 @@
+using AutoMapper;
+using CRUDHw.Mapper;
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllersWithViews();
+
+var mapConfig = new MapperConfiguration(c =>
+{
+    c.AddProfile<AutoMapperProfile>();
+});
+
+var mapper = mapConfig.CreateMapper();
+builder.Services.AddSingleton(mapper);
 
 var app = builder.Build();
 

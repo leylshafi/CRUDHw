@@ -1,44 +1,48 @@
-﻿using CRUDHw.Models;
+﻿using AutoMapper;
+using CRUDHw.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CRUDHw.Controllers
 {
-    public class ProductController : Controller
-    {
-        private static readonly List<Product> products = new()
+	public class ProductController : Controller
+	{
+		private readonly IMapper _mapper;
+
+		public ProductController(IMapper mapper) => _mapper = mapper;
+		private static List<Product> products = new()
 		{
-			new Product()
-			{
-				Id= 0,
+			new Product { Id = Guid.NewGuid(),
 				Name = "Cola",
 				Description = "Cola is a carbonated soft drink flavored with vanilla, cinnamon, citrus oils, and other flavorings. Cola became popular worldwide after the American pharmacist John Stith Pemberton invented Coca-Cola, a trademarked brand, in 1886, which was imitated by other manufacturers.",
 				Quantity = 10,
 				Price = 2.5,
 				Image = "cola.jpg"
 			},
-			new Product()
-			{
-				Id= 1,
+			new Product {
+				Id = Guid.NewGuid(),
 				Name = "Fanta",
 				Description = "Fanta is an American-owned German brand of fruit-flavored carbonated soft drinks created by Coca-Cola Deutschland under the leadership of German businessman Max Keith. There are more than 200 flavors worldwide",
 				Quantity = 200,
 				Price = 2,
-				Image = "fanta.jpg"
-			}
-
+				Image = "fanta.jpg"}
 		};
-		private static int id = 2;
+
         public IActionResult Index()
         {
 			return View(products);
         }
 
 		[HttpPost]
-		public IActionResult AddProduct(Product product)
+		public IActionResult AddProduct(AddProductViewModel model)
 		{
-			product.Id = id++;
-			product.Image = "default.png";
-			products.Add(product);
+			if (ModelState.IsValid)
+			{
+				var product = _mapper.Map<Product>(model);
+                product.Id = Guid.NewGuid();
+                product.Image = "default.png";
+                products.Add(product);
+            }
+
 			return RedirectToAction("Index");
 		}
 
@@ -58,7 +62,7 @@ namespace CRUDHw.Controllers
 		}
 
 		[HttpGet]
-		public IActionResult View(int id)
+		public IActionResult View(Guid id)
 		{
 			var product = products.FirstOrDefault(p => p.Id == id);
 			if (product is not null)
@@ -78,8 +82,9 @@ namespace CRUDHw.Controllers
 
 		}
 
+
 		[HttpGet]
-		public ActionResult Edit(int id)
+		public ActionResult Edit(Guid id)
 		{
 			var product = products.FirstOrDefault(p => p.Id == id);
 			if (product is not null)
